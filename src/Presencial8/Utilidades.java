@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Online7_8;
+package Presencial8;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,8 +20,7 @@ public class Utilidades {
     }
 
     public static boolean comprobarMatricula(String matricula) {
-        
-        
+
         Pattern p = Pattern.compile("[0-9]{4}[BCDFGHIJKLMNPQRSTUVWXYZ]{3}");
         Matcher m = p.matcher(matricula);
         mMatricula = m.matches();
@@ -32,7 +31,7 @@ public class Utilidades {
         Pattern p = Pattern.compile("([XYZ]{1}[0-9]{7})|([0-9]{8})");
         Matcher m = p.matcher(dni);
         return m.matches();
-        
+
     }
 
     public static boolean comprobarCodigoPostal(String codigoPostal) {
@@ -46,13 +45,11 @@ public class Utilidades {
         int resto;
         String letra = "";
         String dniNumeros = dni.substring(0, 8);
-        
+
         resto = Integer.parseInt(dniNumeros) % 23;
         letra = letras[resto];
         return letra;
     }
-    
-
 
     public static String pasarNieADni(String nie) {
         char letra = nie.charAt(0);
@@ -66,4 +63,12 @@ public class Utilidades {
         }
         return nie;
     }
+    
+    public static boolean comprobarFecha(String fecha){
+        
+        Pattern p = Pattern.compile("\\d{2}-\\d{2}-\\d{4}");
+        Matcher m = p.matcher(fecha);
+        return m.matches();
+    }
 }
+

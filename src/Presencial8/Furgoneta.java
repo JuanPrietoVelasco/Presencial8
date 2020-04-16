@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Online7_8;
+package Presencial8;
 
-import Online7_8.Enumerados.Tamanio;
+import Presencial8.Enumerados.Tamanio;
 
 /**
  *

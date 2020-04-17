@@ -44,8 +44,6 @@ import org.w3c.dom.Text;
 public class AlquilerVehiculos {
 
     //guardar datos al salir cuando haya cambios que guardar
-    public static boolean guardarDatos = true;
-
     private static ArrayList<Vehiculo> vehiculos = new ArrayList<>();
     private static ArrayList<Cliente> clientes = new ArrayList<>();
     private static ArrayList<Alquiler> alquileres = new ArrayList<>();
@@ -128,7 +126,8 @@ lo devuelva si este existe o null en caso contrario.*/
 
         //Cargamos los datos desde los archivos.
         leerDatos("");
-
+        //guardar datos al salir cuando haya cambios que guardar
+        boolean guardarDatos = false;
         int opcion = 0;
         Scanner sc = new Scanner(System.in);
         escribirLn("-------------------------------------------------------");
@@ -203,16 +202,18 @@ lo devuelva si este existe o null en caso contrario.*/
                 case 14:
                     vaciarArrays();
                     leerDatosXMLClientes();
+                    leerDatosXMLVehiculos();
+                    leerDatosXMLAlquileres();
                     break;
                 case 15:
                     //guardar datos cuando haya cambios que guardar
                     if (guardarDatos) {
                         confirmarGuardarDatos();
                     }
-                    
+
                     //Vaciamos los arrays
                     vaciarArrays();
-                    
+
                     escribirLn("\n               Fin de programa");
                     escribirLn("------------------------------------------------\n");
                     escribirLn("------------------------------------------------\n");
@@ -1242,7 +1243,8 @@ error que se ha producido.*/
 
             transformer.transform(fuente, resultado);
 
-            System.out.println("Guardado clientes.xml correctamente");
+            escribirLn("\n    Guardado clientes.xml correctamente.");
+            escribirLn("------------------------------------------------\n");
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -1434,7 +1436,8 @@ error que se ha producido.*/
 
             transformer.transform(fuente, resultado);
 
-            System.out.println("Guardado vehiculos.xml correctamente");
+            escribirLn("    Guardado vehiculos.xml correctamente.");
+            escribirLn("------------------------------------------------\n");
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -1506,9 +1509,11 @@ error que se ha producido.*/
 
                 transformer.transform(fuente, resultado);
 
-                System.out.println("Guardado alquileres.xml correctamente");
-
+//                escribirLn("    Guardado alquileres.xml correctamente.");
+//                escribirLn("------------------------------------------------\n");
             }
+            escribirLn("    Guardado alquileres.xml correctamente.");
+            escribirLn("------------------------------------------------\n");
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -1516,66 +1521,275 @@ error que se ha producido.*/
 
     }
 
-    private static void guardarDatosXML(){
-       guardarDatosXMLClientes(); 
-       guardarDatosXMLVehiculos();
-       guardarDatosXMLAlquileres();
-       
+    private static void guardarDatosXML() {
+        guardarDatosXMLClientes();
+        guardarDatosXMLVehiculos();
+        guardarDatosXMLAlquileres();
+
     }
-    
-    private static void vaciarArrays(){
+
+    private static void vaciarArrays() {
         clientes.clear();
         vehiculos.clear();
         alquileres.clear();
     }
-    
-    private static void leerDatosXMLClientes(){
-    
-        try{
+
+    private static void leerDatosXMLClientes() {
+
+        try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            
+
             //Cargar el documento XML de entrada y parsearlo
             Document doc = builder.parse(new File("clientes.xml"));
-            
+
             NodeList nodeList = doc.getDocumentElement().getChildNodes();
-            
-            for(int i = 0; i < nodeList.getLength(); i++){
-                
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+
                 Node node = nodeList.item(i);
-                
-                if(node.getNodeType() == Node.ELEMENT_NODE){
+
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element elemento = (Element) node;
-                    
+
                     //Obtenemos el valor de DNI
                     String dni = elemento.getElementsByTagName("dni").item(0).getChildNodes().item(0).getTextContent();
-                    
+
                     //Obtenemos el valor de Nombre
                     String nombre = elemento.getElementsByTagName("nombre").item(0).getChildNodes().item(0).getTextContent();
-                    
+
                     //Obtenemos el valor de Direccion
                     String direccion = elemento.getElementsByTagName("direccion").item(0).getChildNodes().item(0).getTextContent();
-                    
+
                     //Obtenemos el valor de Localidad
                     String localidad = elemento.getElementsByTagName("localidad").item(0).getChildNodes().item(0).getTextContent();
-                    
+
                     //Obtenemos el valor de cod_postal
                     String cod_postal = elemento.getElementsByTagName("cod_postal").item(0).getChildNodes().item(0).getTextContent();
-                    
-                    Cliente cliente = new Cliente(dni,nombre, direccion,localidad,cod_postal);
-                    
+
+                    Cliente cliente = new Cliente(dni, nombre, direccion, localidad, cod_postal);
+
                     clientes.add(cliente);
-                    
+
                 }
             }
             escribirLn("Clientes guardados en el ArrayList.");
-            
-        
-        
-        
-        }catch (Exception e){
+
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-        
+
         }
+    }
+
+    private static void leerDatosXMLVehiculos() {
+
+        Combustible c = null;
+        CajaCambios cajacambios = null;
+        Tamanio tamanio_ = null;
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            //Cargar el documento XML de entrada y parsearlo
+            Document doc = builder.parse(new File("vehiculos.xml"));
+
+            NodeList nodeList = doc.getDocumentElement().getChildNodes();
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+
+                Node node = nodeList.item(i);
+
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element elemento = (Element) node;
+
+                    //Obtenemos el valor de tipo
+                    String matricula = elemento.getElementsByTagName("matricula").item(0).getChildNodes().item(0).getTextContent();
+
+                    //Obtenemos el valor de tipo
+                    String marca = elemento.getElementsByTagName("marca").item(0).getChildNodes().item(0).getTextContent();
+
+                    //Obtenemos el valor de tipo
+                    String modelo = elemento.getElementsByTagName("modelo").item(0).getChildNodes().item(0).getTextContent();
+
+                    //Obtenemos el valor de tipo
+                    int cilindrada = Integer.parseInt(elemento.getElementsByTagName("cilindrada").item(0).getChildNodes().item(0).getTextContent());
+
+                    //Obtenemos el valor de tipo
+                    String tipo = elemento.getElementsByTagName("tipo").item(0).getChildNodes().item(0).getTextContent();
+
+                    switch (tipo) {
+
+                        case "DEPORTIVO":
+
+                            int num_puertas = Integer.parseInt(elemento.getElementsByTagName("num_puertas").item(0).getChildNodes().item(0).getTextContent());
+
+                            String combustible = elemento.getElementsByTagName("combustible").item(0).getChildNodes().item(0).getTextContent();
+
+                            switch (combustible) {
+                                case "GASOLINA":
+                                    c = Combustible.GASOLINA;
+                                    break;
+                                case "DIESEL":
+                                    c = Combustible.DIESEL;
+                                    break;
+                                case "HIBRIDO":
+                                    c = Combustible.HIBRIDO;
+                                    break;
+                                case "ELECTRICO":
+                                    c = Combustible.ELECTRICO;
+                                    break;
+                            }
+
+                            String cambio = elemento.getElementsByTagName("cambio").item(0).getChildNodes().item(0).getTextContent();
+
+                            switch (cambio) {
+                                case "MANUAL":
+                                    cajacambios = CajaCambios.MANUAL;
+                                    break;
+                                case "AUTOMATICO":
+                                    cajacambios = CajaCambios.AUTOMATICO;
+                                    break;
+                            }
+
+                            String descapotable = elemento.getElementsByTagName("descapotable").item(0).getChildNodes().item(0).getTextContent();
+                            boolean desc = (descapotable.equalsIgnoreCase("TRUE") ? true : false);
+
+                            vehiculos.add(new Deportivo(matricula, marca, modelo, cilindrada, num_puertas, c, cajacambios, desc));
+
+                            break;
+
+                        case "FAMILIAR":
+
+                            num_puertas = Integer.parseInt(elemento.getElementsByTagName("num_puertas").item(0).getChildNodes().item(0).getTextContent());
+
+                            combustible = elemento.getElementsByTagName("combustible").item(0).getChildNodes().item(0).getTextContent();
+
+                            switch (combustible) {
+                                case "GASOLINA":
+                                    c = Combustible.GASOLINA;
+                                    break;
+                                case "DIESEL":
+                                    c = Combustible.DIESEL;
+                                    break;
+                                case "HIBRIDO":
+                                    c = Combustible.HIBRIDO;
+                                    break;
+                                case "ELECTRICO":
+                                    c = Combustible.ELECTRICO;
+                                    break;
+                            }
+
+                            int numPlazas = Integer.parseInt(elemento.getElementsByTagName("num_plazas").item(0).getChildNodes().item(0).getTextContent());
+
+                            String silla_bebe = elemento.getElementsByTagName("silla_bebe").item(0).getChildNodes().item(0).getTextContent();
+                            boolean sillaBebe = (silla_bebe.equalsIgnoreCase("TRUE")) ? true : false;
+
+                            vehiculos.add(new Familiar(matricula, marca, modelo, cilindrada, num_puertas, c, numPlazas, sillaBebe));
+
+                            break;
+
+                        case "FURGONETA":
+
+                            int pma = Integer.parseInt(elemento.getElementsByTagName("pma").item(0).getChildNodes().item(0).getTextContent());
+
+                            int volumen = Integer.parseInt(elemento.getElementsByTagName("volumen").item(0).getChildNodes().item(0).getTextContent());
+
+                            String refrigerado = elemento.getElementsByTagName("refrigerado").item(0).getChildNodes().item(0).getTextContent();
+                            boolean refrigerado_ = (refrigerado.equalsIgnoreCase("TRUE")) ? true : false;
+
+                            String tamanio = elemento.getElementsByTagName("tamanio").item(0).getChildNodes().item(0).getTextContent();
+                            switch (tamanio) {
+
+                                case "PEQUENIO":
+                                    tamanio_ = Tamanio.PEQUENIO;
+                                    break;
+                                case "MEDIANO":
+                                    tamanio_ = Tamanio.MEDIANO;
+                                    break;
+                                case "GRANDE":
+                                    tamanio_ = Tamanio.GRANDE;
+                                    break;
+                            }
+
+                            vehiculos.add(new Furgoneta(matricula, marca, modelo, cilindrada, pma, volumen, refrigerado_, tamanio_));
+
+                            break;
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        escribirLn("Vehiculos guardados en el ArrayList.");
+    }
+
+    private static void leerDatosXMLAlquileres() {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            //Cargar el documento XML de entrada y parsearlo
+            Document doc = builder.parse(new File("alquileres.xml"));
+
+            NodeList nodeList = doc.getDocumentElement().getChildNodes();
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+
+                Node node = nodeList.item(i);
+
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element elemento = (Element) node;
+
+                    //Obtenemos el valor de DNI
+                    String dni = elemento.getElementsByTagName("dni").item(0).getChildNodes().item(0).getTextContent();
+
+                    //Obtenemos el valor de Matrícula
+                    String matricula = elemento.getElementsByTagName("matricula").item(0).getChildNodes().item(0).getTextContent();
+
+                    //Obtenemos el valor de Fecha
+                    String fechaYhora = elemento.getElementsByTagName("fechaYhora").item(0).getChildNodes().item(0).getTextContent();
+
+                    //Obtenemos el valor de Dias
+                    String dias_ = elemento.getElementsByTagName("dias").item(0).getChildNodes().item(0).getTextContent();
+                    int dias = Integer.valueOf(dias_);
+
+                    //Buscamos cliente y vehiculo por dni y matricula para generar el alquiler
+                    if (buscarCliente(dni) != -1) {
+
+                        Cliente nuevoCliente = clientes.get(buscarCliente(dni));
+
+                        if (buscarVehiculo(matricula) != -1) {
+
+                            Vehiculo nuevoVehiculo = vehiculos.get(buscarVehiculo(matricula));
+
+                            String[] datosFecha = fechaYhora.split("[/ :]+");
+
+                            int day = Integer.parseInt(datosFecha[0]);
+                            int month = Integer.parseInt(datosFecha[1]);
+                            int year = Integer.parseInt(datosFecha[2]);
+                            int hour = Integer.parseInt(datosFecha[3]);
+                            int minute = Integer.parseInt(datosFecha[4]);
+
+                            Calendar fechaAlquiler = new GregorianCalendar(year, month - 1, day, hour, minute);
+
+                            Alquiler nuevoAlquiler = new Alquiler(nuevoCliente, nuevoVehiculo);
+                            nuevoAlquiler.setFecha(fechaAlquiler);
+                            nuevoAlquiler.setDias(dias);
+
+                            alquileres.add(nuevoAlquiler);
+//meter boolean /pasarlo aqui atrue y que dispare el sout final
+                        }
+                    }
+                }
+            }
+            escribirLn("Alquileres guardados en el ArrayList.");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+
+        }
+
     }
 }
